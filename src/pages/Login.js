@@ -98,7 +98,7 @@ export default function Login() {
 
     return (
     	user.id !== null ?
-    		<Navigate to="/home" />
+    		<Navigate to="/products" />
     	:
         <Form onSubmit={(e) => authenticate(e)}>
 

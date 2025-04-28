@@ -6,7 +6,9 @@ import Home from './pages/Home';
 import Login from './pages/Login';
 import { UserProvider } from './context/UserContext';
 import RegistrationPage from './pages/RegistrationPage';
+import Products from './pages/Products';
 import Logout from './pages/Logout';
+
 
 function App() {
 
@@ -59,6 +61,8 @@ useEffect(() => {
       <Container className="mt-5">
         <Routes> 
           <Route path="/" element={<Home />} /> 
+          <Route path="/products" element={<Products />} />
+          <Route path="/profile" element={<Products />} />
           <Route path="/login" element={<Login />} /> 
           <Route path="/register" element={<RegistrationPage />} /> 
           <Route path="/logout" element={<Logout />} /> 
