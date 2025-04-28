@@ -18,10 +18,8 @@ const AdminView = ({ productsData, fetchData }) => {
     setProducts(productsArr);
   }, [productsData]);
 
-  // Open the modal
   const handleShowModal = () => setShowModal(true);
 
-  // Close the modal
   const handleCloseModal = () => {
     setShowModal(false);
     setProductName('');
@@ -29,16 +27,50 @@ const AdminView = ({ productsData, fetchData }) => {
     setProductPrice('');
   };
 
-  // Handle form submission (just logging for now)
-  const handleFormSubmit = (e) => {
+  // Handle form submission and send a POST request to backend
+  const handleFormSubmit = async (e) => {
     e.preventDefault();
+
+
+    const token = localStorage.getItem('token');
+    if (!token) {
+      alert('You need to be logged in as an admin');
+      return;
+    }
+
+
     const newProduct = {
       name: productName,
       description: productDescription,
       price: productPrice,
     };
-    console.log('New Product:', newProduct);
-    handleCloseModal(); // Close the modal after submitting
+
+    try {
+      const response = await fetch('https://9791shtc1e.execute-api.us-west-2.amazonaws.com/production/products/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}` 
+        },
+        body: JSON.stringify(newProduct),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to add product');
+      }
+
+      const result = await response.json();
+      console.log('Product added successfully:', result);
+
+
+      fetchData(); 
+
+      handleCloseModal(); 
+
+    } catch (error) {
+      console.error('Error adding product:', error);
+      alert('Failed to add product. Please try again.');
+    }
   };
 
   return (
