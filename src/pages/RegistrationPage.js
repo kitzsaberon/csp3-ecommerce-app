@@ -208,7 +208,7 @@ const RegistrationPage = () => {
                 {/* Submit Button */}
                 <div className="d-grid gap-2">
                   {isActive ? (
-                    <Button variant="primary" type="submit" id="submitBtn">
+                    <Button variant="success" type="submit" id="submitBtn">
                       Submit
                     </Button>
                   ) : (
