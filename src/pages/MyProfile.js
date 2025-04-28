@@ -46,41 +46,48 @@ export default function MyProfile() {
     }
 
     return (
-        
-        <Container className='mt-5'>
-
-            <Row className='justity-content-center'>
-
-            <Card className="text-white bg-primary mb-4">
-                    <Card.Body>
-                        <Card.Title className='mb-4 text-center'>My Profile</Card.Title>
-                        { details ? (
-
-                            <>
-                                <Card.Text className='mb-4 text-center'>
-                                <strong>
-                                    {details.firstName.charAt(0).toUpperCase() + details.firstName.slice(1).toLowerCase()} 
-                                    {' '}
-                                    {details.lastName.charAt(0).toUpperCase() + details.lastName.slice(1).toLowerCase()}
-                                    </strong>
-                                </Card.Text>
-                                <hr className="bg-light" />
-                                <Card.Text className="mt-4">
-                                    <strong>Contacts</strong>
-                                </Card.Text>
-                                <ul className="list-unstyled">
-                                    <li><strong>Email:</strong> {details.email}</li>
-                                    <li><strong>Mobile No:</strong> {details.mobileNo}</li>
-                                </ul>
-                            </>
-                        ) : (
-                                <p>Loading Details</p>
-                        )}                   
-                    </Card.Body>
-                </Card>
-
-            </Row>
-        </Container>
+        <Container className="mt-5">
+        <Row className="justify-content-center">
+          <Card className="bg-light shadow-sm rounded-lg w-100" style={{ maxWidth: '600px' }}>
+            <Card.Body>
+              <Card.Title className="text-center text-dark mb-4">
+                <h3>My Profile</h3>
+              </Card.Title>
+              {details ? (
+                <>
+                  {/* Full Name */}
+                  <Card.Text className="text-center mb-4">
+                    <h5>
+                      <strong>
+                        {details.firstName.charAt(0).toUpperCase() + details.firstName.slice(1).toLowerCase()}
+                        {' '}
+                        {details.lastName.charAt(0).toUpperCase() + details.lastName.slice(1).toLowerCase()}
+                      </strong>
+                    </h5>
+                  </Card.Text>
+  
+                  <hr className="bg-dark mb-4" />
+  
+                  {/* Contact Information */}
+                  <Card.Text className="font-weight-bold">Contacts</Card.Text>
+                  <ul className="list-unstyled">
+                    <li>
+                      <strong>Email: </strong>
+                      <span>{details.email}</span>
+                    </li>
+                    <li>
+                      <strong>Mobile No: </strong>
+                      <span>{details.mobileNo}</span>
+                    </li>
+                  </ul>
+                </>
+              ) : (
+                <p className="text-center">Loading Details...</p>
+              )}
+            </Card.Body>
+          </Card>
+        </Row>
+      </Container>
     )
 
 }

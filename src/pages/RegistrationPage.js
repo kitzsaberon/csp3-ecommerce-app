@@ -38,7 +38,6 @@ const RegistrationPage = () => {
     e.preventDefault();
 
     fetch('https://9791shtc1e.execute-api.us-west-2.amazonaws.com/production/users/register', {
-
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -51,74 +50,47 @@ const RegistrationPage = () => {
         password: password
       })
     })
+    .then(res => res.json())
+    .then(data => {
+      if (data.success === true) {
+        // Registration was successful
+        setFirstName("");
+        setLastName("");
+        setEmail("");
+        setMobileNo("");
+        setPassword("");
+        setConfirmPassword("");
 
-      .then(res => res.json())
-      
-      .then(data => {
-        if(data.message === 'User registered successfully') {
-          setFirstName("");
-          setLastName("");
-          setEmail("");
-          setMobileNo("");
-          setPassword("");
-          setConfirmPassword("");
+        Swal.fire({
+          icon: 'success',
+          title: 'Success!',
+          text: data.message || 'Registration successful',
+          confirmButtonColor: '#3085d6',
+          confirmButtonText: 'OK'
+        }).then(() => {
+          navigate('/login');
+        });
 
-          Swal.fire({
-            icon: 'success',
-            title: 'Success!',
-            text: 'Registration successful',
-            confirmButtonColor: '#3085d6',
-            confirmButtonText: 'OK'
-          }).then(() => {
-
-            navigate('/login');
-          });
-          
-        } else if (data.error === 'Invalid email format') {
-
-          Swal.fire({
-            icon: 'error',
-            title: 'Invalid Email',
-            text: 'Please enter a valid email address',
-            confirmButtonColor: '#d33'
-          });
-        } else if (data.error === 'Mobile number is invalid') {
-
-          Swal.fire({
-            icon: 'error',
-            title: 'Invalid Mobile Number',
-            text: 'Please enter a valid 11-digit mobile number',
-            confirmButtonColor: '#d33'
-          });
-        } else if (data.error === 'All fields are required') {
-
-          Swal.fire({
-            icon: 'error',
-            title: 'Missing Fields',
-            text: 'All fields must be filled out.',
-            confirmButtonColor: '#d33'
-          });
-        } else if (data.error === 'Password must be at least 8 characters long') {
-
-          Swal.fire({
-            icon: 'error',
-            title: 'Weak Password',
-            text: 'Password must be at least 8 characters.',
-            confirmButtonColor: '#d33'
-          });
-        } else if (data.error === 'Email already in use') {
-
-          Swal.fire({
-            icon: 'error',
-            title: 'Email Taken',
-            text: 'This email is already registered.',
-            confirmButtonColor: '#d33'
-          });
-        }
-
-
+      } else if (data.success === false) {
+        // Display error message from data.message
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: data.message || 'Something went wrong',
+          confirmButtonColor: '#d33'
+        });
+      }
     })
-  }
+    .catch(error => {
+      // Catch network errors or other issues
+      Swal.fire({
+        icon: 'error',
+        title: 'Network Error',
+        text: 'There was an issue with the registration process.',
+        confirmButtonColor: '#d33'
+      });
+    });
+}
 
   return (
     <Container className="mt-5">

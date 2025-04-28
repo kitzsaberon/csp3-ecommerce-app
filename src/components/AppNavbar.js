@@ -11,7 +11,7 @@ function AppNavbar() {
   return (
     <Navbar bg="dark" variant="dark" expand="lg">
       <Container>
-        <Navbar.Brand as={NavLink} to="/">K and G E-Shop</Navbar.Brand> 
+        <Navbar.Brand as={NavLink} to="/">K & G | E-Shop</Navbar.Brand> 
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="ms-auto">
@@ -20,11 +20,16 @@ function AppNavbar() {
               <Nav.Link as={NavLink} to="/">Home</Nav.Link> 
               
             )}
+                        {
+              user.id !== null && (
+                <Nav. Link as={NavLink} to="/products">Products</Nav. Link>
+              )}
 
             {
               user.id !== null && (
                 <Nav. Link as={NavLink} to="/myProfile">My Profile</Nav. Link>
               )}
+              
 
             {user.id !== null ? (
               <Nav.Link as={NavLink} to="/logout">Logout</Nav.Link>

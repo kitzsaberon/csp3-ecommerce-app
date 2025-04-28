@@ -1,47 +1,82 @@
 import { useState, useEffect } from 'react';
-import { CardGroup } from 'react-bootstrap';
+import { Row, Spinner, Alert } from 'react-bootstrap';
 import PreviewProducts from './PreviewProducts';
 
 export default function FeaturedProducts() {
 
-	const [previews, setPreviews] = useState([]);
+  const [previews, setPreviews] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-	useEffect(() => {
+  useEffect(() => {
+    fetch('https://9791shtc1e.execute-api.us-west-2.amazonaws.com/production/products/active')
+      .then(res => res.json())
+      .then(data => {
+        if (data.length === 0) {
+          setError("No featured products available.");
+          setLoading(false);
+          return;
+        }
 
-		fetch('https://9791shtc1e.execute-api.us-west-2.amazonaws.com/production/products/active')
-		.then(res => res.json())
-		.then(data => {
+        const featured = [];
+        const numbers = new Set();
 
-			const numbers = [];
-			const featured = [];
+        // Helper function to generate a unique random number
+        const generateRandomNumber = () => {
+          let randomNum;
+          do {
+            randomNum = Math.floor(Math.random() * data.length);
+          } while (numbers.has(randomNum));
+          numbers.add(randomNum);
+          return randomNum;
+        };
 
-			const generateRandomNumber = () => {
-				let randomNum = Math.floor(Math.random() * data.length)
+        // Select 3 random featured products
+        while (featured.length < 3) {
+          const randomIndex = generateRandomNumber();
+          featured.push(
+            <PreviewProducts 
+              data={data[randomIndex]} 
+              key={data[randomIndex]._id} 
+              breakPoint={4} 
+            />
+          );
+        }
 
-				if(numbers.indexOf(randomNum) === -1) {
-					numbers.push(randomNum)
-				} else {
-					generateRandomNumber()
-				}
-			}
+        setPreviews(featured);
+        setLoading(false);
+      })
+      .catch(err => {
+        setError("An error occurred while fetching products.");
+        setLoading(false);
+      });
+  }, []);
 
-			for(let i=0; i < 3; i++) {
-				generateRandomNumber()
+  if (loading) {
+    return (
+      <div className="text-center">
+        <Spinner animation="border" variant="primary" />
+        <p>Loading featured products...</p>
+      </div>
+    );
+  }
 
-				featured.push(<PreviewProducts data={data[numbers[i]]} key={data[numbers[i]]._id} breakPoint={4} />)
-			}
+  if (error) {
+    return (
+      <div className="text-center">
+        <Alert variant="danger">
+          {error}
+        </Alert>
+      </div>
+    );
+  }
 
-			setPreviews(featured);
-		})
-	}, [])
-	return (
-		<>
-		<h2 className="text-center">Featured Products</h2>
-		<CardGroup className="justify-content-center">
-		{previews}
-		</CardGroup>
-		</>
-
-
-		)
+  return (
+    <>
+      <h2 className="text-center mb-4">Featured Products</h2>
+      <Row className="justify-content-center">
+        {previews}
+      </Row>
+    </>
+  );
 }
