@@ -34,7 +34,8 @@ export default function Products() {
   return (
     <>
       {user ?.isAdmin ? (
-        <AdminView productData={products} fetchData={fetchData} />
+     <AdminView productsData={products} fetchData={fetchData} />
+
       ) : (
         <UserView productsData={products}/>
       )}

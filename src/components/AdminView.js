@@ -1,7 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { Button, Modal, Container, Row, Col, Card, Form } from 'react-bootstrap';
+import { Button, Modal, Container, Row, Col, Card, Form, Table } from 'react-bootstrap';
+import EditProduct from './EditProduct.js';
+import ArchiveProduct from './ArchiveProduct';
 
 const AdminView = ({ productsData, fetchData }) => {
+
+  // ADD PRODUCT
   const [products, setProducts] = useState([]);
   const [showModal, setShowModal] = useState(false); 
   const [productName, setProductName] = useState('');
@@ -31,13 +35,11 @@ const AdminView = ({ productsData, fetchData }) => {
   const handleFormSubmit = async (e) => {
     e.preventDefault();
 
-
     const token = localStorage.getItem('token');
     if (!token) {
       alert('You need to be logged in as an admin');
       return;
     }
-
 
     const newProduct = {
       name: productName,
@@ -61,7 +63,6 @@ const AdminView = ({ productsData, fetchData }) => {
 
       const result = await response.json();
       console.log('Product added successfully:', result);
-
 
       fetchData(); 
 
@@ -97,6 +98,42 @@ const AdminView = ({ productsData, fetchData }) => {
             </Card.Body>
           </Card>
         </Col>
+      </Row>
+
+      <Row>
+        <Table striped bordered hover responsive>
+          <thead>
+            <tr className="text-center">
+              <th>ID</th>
+              <th>Name</th>
+              <th>Description</th>
+              <th>Price</th>
+              <th>Availability</th>
+              <th colSpan={2}>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {products.map((product) => (
+              <tr key={product.id} className="text-center">
+                <td>{product.id}</td>
+                <td>{product.name}</td>
+                <td>{product.description}</td>
+                <td>{product.price}</td>
+                <td>{product.isActive ? 'Active' : 'Inactive'}</td>
+                <td>
+                  <Button variant="warning">
+                    Edit
+                  </Button>
+                </td>
+                <td>
+                  <Button variant="danger">
+                    Archive
+                  </Button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </Table>
       </Row>
 
       {/* Add Product Modal */}
