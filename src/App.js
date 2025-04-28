@@ -8,6 +8,7 @@ import { UserProvider } from './context/UserContext';
 import RegistrationPage from './pages/RegistrationPage';
 import Products from './pages/Products';
 import Logout from './pages/Logout';
+import MyProfile from './pages/MyProfile';
 
 
 function App() {
@@ -58,11 +59,11 @@ useEffect(() => {
     <UserProvider value={{ user, setUser, unsetUser }}>
     <Router>
       <AppNavbar />
-      <Container className="mt-5">
+      <Container className="mt-1">
         <Routes> 
           <Route path="/" element={<Home />} /> 
           <Route path="/products" element={<Products />} />
-          <Route path="/profile" element={<Products />} />
+          <Route path="/myProfile" element={<MyProfile />} />
           <Route path="/login" element={<Login />} /> 
           <Route path="/register" element={<RegistrationPage />} /> 
           <Route path="/logout" element={<Logout />} /> 

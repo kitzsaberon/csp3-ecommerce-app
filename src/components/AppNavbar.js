@@ -18,12 +18,19 @@ function AppNavbar() {
 
             {user.id !== null && (
               <Nav.Link as={NavLink} to="/">Home</Nav.Link> 
+              
             )}
+
+            {
+              user.id !== null && (
+                <Nav. Link as={NavLink} to="/myProfile">My Profile</Nav. Link>
+              )}
 
             {user.id !== null ? (
               <Nav.Link as={NavLink} to="/logout">Logout</Nav.Link>
             ) : (
               <>
+              <Nav.Link as={NavLink} to="/">Home</Nav.Link> 
                 <Nav.Link as={NavLink} to="/login">Login</Nav.Link>
                 <Nav.Link as={NavLink} to="/register">Register</Nav.Link>
               </>
