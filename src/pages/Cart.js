@@ -1,20 +1,22 @@
 import { useEffect, useState, useContext } from "react";
-import { Container, Table, Button, Alert } from "react-bootstrap";
+import { Container, Table, Button, Alert, Form } from "react-bootstrap";
 import UserContext from "../context/UserContext";
-import CartContext from "../context/CartContext"; // Import CartContext
+import CartContext from "../context/CartContext";
 import Swal from 'sweetalert2';
 
 export default function Cart() {
   const { user } = useContext(UserContext);
-  const { cart, setCart } = useContext(CartContext); // Get cart from context
+  const { cart, setCart } = useContext(CartContext);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [updatingId, setUpdatingId] = useState(null);
 
   useEffect(() => {
     fetchCart();
-  }, [setCart]);
+  }, []);
 
   const fetchCart = () => {
+    setLoading(true);
     fetch("https://9791shtc1e.execute-api.us-west-2.amazonaws.com/production/cart/get-cart", {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("token")}`
@@ -36,36 +38,45 @@ export default function Cart() {
   };
 
   const updateQuantity = async (productId, newQuantity) => {
-    if (newQuantity <= 0) return; // Prevent quantity from going below 1
+    if (newQuantity <= 0) return;
 
-    const res = await fetch("https://9791shtc1e.execute-api.us-west-2.amazonaws.com/production/update-cart-quantity", {
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${localStorage.getItem("token")}`
-      },
-      body: JSON.stringify({ productId, newQuantity })
-    });
+    setUpdatingId(productId);
 
-    if (res.ok) {
-      fetchCart(); // Re-fetch the cart to reflect the updated quantity
-      Swal.fire({
-        icon: "success",
-        title: "Updated!",
-        text: "Product quantity updated successfully.",
-        timer: 1500,
-        showConfirmButton: false
+    try {
+      const res = await fetch("https://9791shtc1e.execute-api.us-west-2.amazonaws.com/production/cart/update-cart-quantity", {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`
+        },
+        body: JSON.stringify({ productId, newQuantity })
       });
-    } else {
+
+      if (res.ok) {
+        fetchCart();
+        Swal.fire({
+          icon: "success",
+          title: "Updated!",
+          text: "Product quantity updated.",
+          timer: 1200,
+          showConfirmButton: false
+        });
+      } else {
+        throw new Error();
+      }
+    } catch {
       Swal.fire({
         icon: "error",
         title: "Error",
-        text: "Failed to update quantity.",
+        text: "Could not update quantity."
       });
+    } finally {
+      setUpdatingId(null);
     }
   };
 
   const removeItem = async (productId) => {
+    setUpdatingId(productId);
     const res = await fetch(`https://9791shtc1e.execute-api.us-west-2.amazonaws.com/production/cart/${productId}/remove-from-cart`, {
       method: "PATCH",
       headers: {
@@ -80,13 +91,14 @@ export default function Cart() {
       Swal.fire({
         icon: "success",
         title: "Removed!",
-        text: "Product successfully removed from cart.",
-        timer: 1500,
+        text: "Item removed from cart.",
+        timer: 1200,
         showConfirmButton: false
       });
     } else {
-      alert("Failed to remove item.");
+      Swal.fire("Error", "Failed to remove item.", "error");
     }
+    setUpdatingId(null);
   };
 
   const clearCart = async () => {
@@ -110,20 +122,10 @@ export default function Cart() {
       });
 
       if (res.ok) {
-        setCart({ cartItems: [], totalPrice: 0 }); // Clear cart in context immediately
-        Swal.fire({
-          icon: "success",
-          title: "Cart Cleared",
-          text: "All items have been removed from your cart.",
-          timer: 1500,
-          showConfirmButton: false
-        });
+        setCart({ cartItems: [], totalPrice: 0 });
+        Swal.fire("Cleared", "Cart is now empty.", "success");
       } else {
-        Swal.fire({
-          icon: "error",
-          title: "Error",
-          text: "Failed to clear the cart.",
-        });
+        Swal.fire("Error", "Could not clear cart.", "error");
       }
     }
   };
@@ -135,7 +137,7 @@ export default function Cart() {
   return (
     <Container>
       <h3>Your Cart</h3>
-      <Table striped bordered hover>
+      <Table striped bordered hover responsive>
         <thead>
           <tr>
             <th>Product</th>
@@ -145,25 +147,52 @@ export default function Cart() {
           </tr>
         </thead>
         <tbody>
-          {cart.cartItems.map(item => (
-            <tr key={item._id || item.productId._id || item.productId}>
-              <td>
-                <strong>{item.productId.name}</strong><br />
-                <small>{item.productId.description}</small>
-              </td>
-              <td>
-                <Button variant="secondary" size="sm" onClick={() => updateQuantity(item.productId._id || item.productId, item.quantity - 1)}>-</Button>
-                {item.quantity}
-                <Button variant="secondary" size="sm" onClick={() => updateQuantity(item.productId._id || item.productId, item.quantity + 1)}>+</Button>
-              </td>
-              <td>₱{item.subtotal.toFixed(2)}</td>
-              <td>
-                <Button variant="danger" size="sm" onClick={() => removeItem(item.productId._id || item.productId)}>
-                  Remove
-                </Button>
-              </td>
-            </tr>
-          ))}
+          {cart.cartItems.map(item => {
+            const product = item.productId || {};
+            const productId = product._id || item.productId;
+
+            return (
+              <tr key={productId}>
+                <td>
+                  <strong>{product.name || "Unnamed Product"}</strong><br />
+                  <small>{product.description || "No description"}</small>
+                </td>
+                <td>
+                  <Button
+                    variant="secondary"
+                    size="sm"
+                    disabled={updatingId === productId}
+                    onClick={() => updateQuantity(productId, item.quantity - 1)}
+                  >-</Button>{" "}
+                  <Form.Control
+                    type="number"
+                    value={item.quantity}
+                    onChange={(e) => updateQuantity(productId, parseInt(e.target.value))}
+                    min={1}
+                    style={{ display: "inline-block", width: "60px", textAlign: "center" }}
+                    disabled={updatingId === productId}
+                  />{" "}
+                  <Button
+                    variant="secondary"
+                    size="sm"
+                    disabled={updatingId === productId}
+                    onClick={() => updateQuantity(productId, item.quantity + 1)}
+                  >+</Button>
+                </td>
+                <td>₱{item.subtotal.toFixed(2)}</td>
+                <td>
+                  <Button
+                    variant="danger"
+                    size="sm"
+                    onClick={() => removeItem(productId)}
+                    disabled={updatingId === productId}
+                  >
+                    Remove
+                  </Button>
+                </td>
+              </tr>
+            );
+          })}
           <tr>
             <td colSpan="2"><strong>Total</strong></td>
             <td colSpan="2"><strong>₱{cart.totalPrice.toFixed(2)}</strong></td>

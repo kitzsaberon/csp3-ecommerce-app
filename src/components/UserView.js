@@ -14,7 +14,7 @@ export default function UserView({productsData}) {
 
       <Row className="mt-4 gx-4 gy-4">
         {products.map(products => (
-          <ProductCard key={products.id} productProp={products} />
+          <ProductCard key={products._id} productProp={products} />
         ))}
       </Row>
     </Container>
