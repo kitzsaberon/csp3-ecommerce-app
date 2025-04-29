@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Button, Modal, Container, Row, Col, Card, Form, Table } from 'react-bootstrap';
+import EditProduct from './EditProduct';
+import ArchiveProduct from './ArchiveProduct';
 
 const AdminView = ({ productsData, fetchData }) => {
   // State variables
@@ -166,17 +168,17 @@ const AdminView = ({ productsData, fetchData }) => {
                 </thead>
                 <tbody>
                   {currentProducts.map((product) => (
-                    <tr key={product.id} className="text-center">
-                      <td>{product.id}</td>
+                    <tr key={product._id} className="text-center">
+                      <td>{product._id}</td>
                       <td>{product.name}</td>
                       <td>{product.description}</td>
                       <td>{product.price}</td>
                       <td>{product.isActive ? 'Active' : 'Inactive'}</td>
                       <td>
-                        <Button variant="warning">Edit</Button>
+                        <EditProduct product={product} fetchData={fetchData} />
                       </td>
                       <td>
-                        <Button variant="danger">Archive</Button>
+                        <ArchiveProduct product={product} isActive={product.isActive} fetchData={fetchData} />
                       </td>
                     </tr>
                   ))}

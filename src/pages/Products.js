@@ -33,7 +33,7 @@ export default function Products() {
 
   return (
     <>
-      {user ?.isAdmin ? (
+      {user.isAdmin ? (
      <AdminView productsData={products} fetchData={fetchData} />
 
       ) : (
