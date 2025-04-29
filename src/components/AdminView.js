@@ -1,11 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Button, Modal, Container, Row, Col, Card, Form, Table } from 'react-bootstrap';
-<<<<<<< HEAD
 import Swal from 'sweetalert2';
-=======
 import EditProduct from './EditProduct';
 import ArchiveProduct from './ArchiveProduct';
->>>>>>> 247021824fdaa319c5d651b5190941dab0d4a3ed
+
 
 const AdminView = ({ productsData, fetchData }) => {
   // State variables
@@ -183,8 +181,12 @@ const AdminView = ({ productsData, fetchData }) => {
                       <td>{product._id}</td>
                       <td>{product.name}</td>
                       <td>{product.description}</td>
-                      <td>{product.price}</td>
-                      <td>{product.isActive ? 'Active' : 'Inactive'}</td>
+                      <td>₱{Number(product.price).toLocaleString('en-PH', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+
+                      <td className={product.isActive ? 'text-success' : 'text-danger'}>
+                        {product.isActive ? 'Available' : 'Unavailable'}
+                      </td>
+
                       <td>
                         <EditProduct product={product} fetchData={fetchData} />
                       </td>

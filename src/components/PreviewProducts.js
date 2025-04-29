@@ -32,7 +32,7 @@ export default function PreviewProducts(props) {
                             as={Link}
                             to={`/products/${_id}`}
                         >
-                            View Details
+                            View Product
                         </Button>
                     </div>
                 </Card.Footer>
