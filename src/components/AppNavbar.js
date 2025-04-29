@@ -1,12 +1,12 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Navbar, Nav, Container } from 'react-bootstrap';
 import { NavLink } from 'react-router-dom';
-import { useContext } from 'react';
 import UserContext from '../context/UserContext';
+import CartContext from '../context/CartContext'; // Import CartContext
 
 function AppNavbar() {
-
   const { user } = useContext(UserContext);
+  const { cart } = useContext(CartContext); // Get cart from context
 
   return (
     <Navbar bg="dark" variant="dark" expand="lg">
@@ -16,27 +16,20 @@ function AppNavbar() {
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="ms-auto">
 
-            {user.id !== null && (
-              <Nav.Link as={NavLink} to="/">Home</Nav.Link> 
-              
-            )}
-                        {
-              user.id !== null && (
-                <Nav. Link as={NavLink} to="/products">Products</Nav. Link>
-              )}
-
-            {
-              user.id !== null && (
-                <Nav. Link as={NavLink} to="/myProfile">My Profile</Nav. Link>
-              )}
-              
-
             {user.id !== null ? (
-              <Nav.Link as={NavLink} to="/logout">Logout</Nav.Link>
+              <>
+                <Nav.Link as={NavLink} to="/">Home</Nav.Link>
+                <Nav.Link as={NavLink} to="/products">Products</Nav.Link>
+                <Nav.Link as={NavLink} to="/myProfile">My Profile</Nav.Link>
+                <Nav.Link as={NavLink} to="/cart">
+                  My Cart {cart && cart.cartItems.length > 0 && `(${cart.cartItems.length})`} {/* Display item count */}
+                </Nav.Link>
+                <Nav.Link as={NavLink} to="/logout">Logout</Nav.Link>
+              </>
             ) : (
               <>
-              <Nav.Link as={NavLink} to="/">Home</Nav.Link> 
-              <Nav.Link as={NavLink} to="/products">Products</Nav.Link> 
+                <Nav.Link as={NavLink} to="/">Home</Nav.Link>
+                <Nav.Link as={NavLink} to="/products">Products</Nav.Link>
                 <Nav.Link as={NavLink} to="/login">Login</Nav.Link>
                 <Nav.Link as={NavLink} to="/register">Register</Nav.Link>
               </>

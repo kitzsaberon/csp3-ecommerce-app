@@ -1,12 +1,13 @@
 import { useState, useEffect, useContext } from 'react';
 import { Container, Card, Button, Row, Col, InputGroup, FormControl } from 'react-bootstrap';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2'; 
 import UserContext from '../context/UserContext';
 
 export default function ProductView() {
     const { user } = useContext(UserContext);
     const { productId } = useParams();
+    const navigate = useNavigate(); // Added for navigation
 
     const [name, setName] = useState("");
     const [description, setDescription] = useState("");
@@ -33,7 +34,10 @@ export default function ProductView() {
             } else if (res.status === 404) {
                 Swal.fire('Not Found', 'Product not found or inactive.', 'warning');
             } else if (res.status === 200) {
-                Swal.fire('Success', 'Successfully added to cart!', 'success');
+                Swal.fire('Success', 'Successfully added to cart!', 'success')
+                    .then(() => {
+                        navigate('/cart'); // Navigate to the products page after success
+                    });
             } else {
                 Swal.fire('Server Error', 'Internal Server Error. Please contact support.', 'error');
             }

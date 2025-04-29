@@ -5,73 +5,71 @@ import AppNavbar from './components/AppNavbar';
 import Home from './pages/Home';
 import Login from './pages/Login';
 import { UserProvider } from './context/UserContext';
+import { CartProvider } from './context/CartContext'; // Import CartProvider
 import RegistrationPage from './pages/RegistrationPage';
 import Products from './pages/Products';
 import Logout from './pages/Logout';
 import MyProfile from './pages/MyProfile';
 import ProductView from './pages/ProductView';
-
+import Cart from './pages/Cart';
 
 function App() {
-
   const [user, setUser] = useState({
     id: null,
     isAdmin: null
-});
+  });
 
-// function for clearing the local storage
-function unsetUser() {
+  // function for clearing the local storage
+  function unsetUser() {
     localStorage.clear();
-}
+  }
 
-useEffect(() => {
+  useEffect(() => {
     console.log(user);
     console.log(localStorage);
-}, [user]);
+  }, [user]);
 
-useEffect(() => {
-
+  useEffect(() => {
     if(localStorage.getItem('token') !== null) {
-
-        fetch('https://9791shtc1e.execute-api.us-west-2.amazonaws.com/production/users/details', {
-            headers: {
-                Authorization: `Bearer ${localStorage.getItem('token')}`
-            }
-        })
-        .then(res => res.json())
-        .then(data => {
-            setUser({
-                id: data._id,
-                isAdmin: data.isAdmin
-            })
-        })
-        
-    } else {
+      fetch('https://9791shtc1e.execute-api.us-west-2.amazonaws.com/production/users/details', {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`
+        }
+      })
+      .then(res => res.json())
+      .then(data => {
         setUser({
-            id: null,
-            isAdmin: null
-        })
+          id: data._id,
+          isAdmin: data.isAdmin
+        });
+      });
+    } else {
+      setUser({
+        id: null,
+        isAdmin: null
+      });
     }
-    
-}, [])
-
+  }, []);
 
   return (
     <UserProvider value={{ user, setUser, unsetUser }}>
-    <Router>
-      <AppNavbar />
-      <Container className="mt-1">
-        <Routes> 
-          <Route path="/" element={<Home />} /> 
-          <Route path="/products" element={<Products />} />
-          <Route path="/myProfile" element={<MyProfile />} />
-          <Route path="/products/:productId" element={<ProductView />} />
-          <Route path="/login" element={<Login />} /> 
-          <Route path="/register" element={<RegistrationPage />} /> 
-          <Route path="/logout" element={<Logout />} /> 
-        </Routes>
-      </Container>
-    </Router>
+      <CartProvider> {/* Wrap App with CartProvider */}
+        <Router>
+          <AppNavbar />
+          <Container className="mt-1">
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/products" element={<Products />} />
+              <Route path="/myProfile" element={<MyProfile />} />
+              <Route path="/cart" element={<Cart />} />
+              <Route path="/products/:productId" element={<ProductView />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/register" element={<RegistrationPage />} />
+              <Route path="/logout" element={<Logout />} />
+            </Routes>
+          </Container>
+        </Router>
+      </CartProvider>
     </UserProvider>
   );
 }
