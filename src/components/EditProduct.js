@@ -13,6 +13,7 @@ export default function EditProduct({ product, fetchData }) {
   const editOpen = () => setShowEdit(true);
   const editClose = () => setShowEdit(false);
 
+
   const editProduct = async (e, productId) => {
     e.preventDefault();
 
@@ -28,18 +29,22 @@ export default function EditProduct({ product, fetchData }) {
 
       const data = await response.json();
 
-      if (response.ok && data.success === true) {
+      console.log('Response:', response);
+      console.log('Data:', data);
+
+      if (response.ok) {
         Swal.fire({
           icon: 'success',
           title: 'Success!',
-          text: 'Successfully Updated!',
+          text: data.message || 'Product updated successfully!',
           confirmButtonColor: '#3085d6'
         });
+
       } else {
         Swal.fire({
-          icon: 'error',
+          icon: 'failure',
           title: 'Failure!',
-          text: data.message || 'Something Went Wrong. Please Try Again.',
+          text: data.message || 'Something Went Wrong.',
           confirmButtonColor: '#d33'
         });
       }
@@ -51,7 +56,7 @@ export default function EditProduct({ product, fetchData }) {
       Swal.fire({
         icon: 'error',
         title: 'Error!',
-        text: 'Network Error or Server Problem. Please Try Again.',
+        text: error.message || 'Network Error or Server Problem. Please Try Again.',
         confirmButtonColor: '#d33'
       });
       editClose();

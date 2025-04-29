@@ -14,30 +14,30 @@ export default function ArchiveProduct({product, isActive, fetchData}) {
                 Authorization: `Bearer ${localStorage.getItem('token')}`
             }
         })
-        .then(res => res.json())
-        .then(data => {
+        .then(async res => {
 
-            if(data.success === true) {
+            const data = await res.json();
+
+            if (res.ok) {
                 
                 Swal.fire({
                     icon: 'success',
                     title: 'Success!',
-                    text: 'Successfully Archived!',
+                    text: data.message || 'Successfully Archived!',
                     confirmButtonColor: '#3085d6'
                   });
-                fetchData();
 
             } else {
                 
                 Swal.fire({
                     icon: 'error',
                     title: 'Failure!',
-                    text: 'Something Went Wrong!',
+                    text: data.message || 'Something Went Wrong!',
                     confirmButtonColor: '#d33'
                   });
-                fetchData();
             }
-        })
+            fetchData();
+        });
     }
 
 
@@ -49,31 +49,30 @@ export default function ArchiveProduct({product, isActive, fetchData}) {
                 Authorization: `Bearer ${localStorage.getItem('token')}`
             }
         })
-        .then(res => res.json())
-        .then(data => {
+        .then(async res => {
 
-            if(data.success === true) {
+            const data = await res.json();
+
+            if (res.ok) {
 
                 Swal.fire({
                     icon: 'success',
                     title: 'Success!',
-                    text: 'Successfully Activated!',
+                    text: data.message || 'Successfully Activated!',
                     confirmButtonColor: '#3085d6'
                   });
-                fetchData();
 
             } else {
 
                 Swal.fire({
                     icon: 'error',
                     title: 'Failure!',
-                    text: 'Something Went Wrong!',
+                    text: data.message || 'Something Went Wrong!',
                     confirmButtonColor: '#d33'
-                  });
-                fetchData();
-
+                  });   
             }
-        })
+            fetchData();
+        });
     }
  
     return (
