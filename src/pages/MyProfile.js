@@ -2,6 +2,8 @@ import React, { useContext, useEffect, useState } from 'react'
 import {Container, Row, Col, Card} from 'react-bootstrap'
 import UserContext from '../context/UserContext';
 import {Navigate} from 'react-router-dom';
+import UpdateProfile from '../components/UpdateProfile';
+import ResetPassword from '../components/ResetPassword.js';
 
 export default function MyProfile() {
 
@@ -87,6 +89,27 @@ export default function MyProfile() {
             </Card.Body>
           </Card>
         </Row>
+        <Row className="justify-content-center">
+        <Col md={8} lg={6}>
+          <Card className="mb-4">
+            <Card.Body>
+              <Card.Title className="mb-4 text-center">Update Profile</Card.Title>
+              <UpdateProfile onUpdate={fetchDetails} />
+            </Card.Body>
+          </Card>
+        </Col>
+      </Row>
+
+      <Row className="justify-content-center">
+        <Col md={8} lg={6}>
+          <Card className="mb-4">
+            <Card.Body>
+              <Card.Title className="mb-4 text-center">Reset Password</Card.Title>
+              <ResetPassword />
+            </Card.Body>
+          </Card>
+        </Col>
+      </Row>
       </Container>
     )
 

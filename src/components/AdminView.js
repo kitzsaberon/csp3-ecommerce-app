@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Button, Modal, Container, Row, Col, Card, Form, Table } from 'react-bootstrap';
+import Swal from 'sweetalert2';
 
 const AdminView = ({ productsData, fetchData }) => {
   // State variables
@@ -74,7 +75,14 @@ const AdminView = ({ productsData, fetchData }) => {
       }
 
       const result = await response.json();
-      console.log('Product added successfully:', result);
+     
+              Swal.fire({
+                icon: 'success',
+                title: 'Success!',
+                text: response.message || 'Product Added Successfully',
+                confirmButtonColor: '#3085d6',
+                confirmButtonText: 'OK'
+              })
 
       fetchData();
       handleCloseModal();

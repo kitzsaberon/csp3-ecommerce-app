@@ -4,6 +4,7 @@ import AdminView from '../components/AdminView';
 import UserView from '../components/UserView';
 import UserContext from '../context/UserContext';
 
+
 export default function Products() {
   const { user } = useContext(UserContext);
   const [products, setProducts] = useState([]);
