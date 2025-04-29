@@ -4,7 +4,7 @@ import UserContext from "../context/UserContext";
 import CartContext from "../context/CartContext";
 import Swal from 'sweetalert2';
 import CheckoutOrder from '../components/CheckoutOrder';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from "react-router-dom"; // Import useNavigate
 
 export default function Cart() {
   const { user } = useContext(UserContext);
@@ -12,7 +12,7 @@ export default function Cart() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [updatingId, setUpdatingId] = useState(null);
-  const navigate = useNavigate();
+  const navigate = useNavigate(); // Initialize navigate
 
   useEffect(() => {
     fetchCart();
@@ -126,7 +126,9 @@ export default function Cart() {
 
       if (res.ok) {
         setCart({ cartItems: [], totalPrice: 0 });
-        Swal.fire("Cleared", "Cart is now empty.", "success");
+        Swal.fire("Cleared", "Cart is now empty.", "success").then(() => {
+          navigate("/products"); // Navigate to products page after clearing cart
+        });
       } else {
         Swal.fire("Error", "Could not clear cart.", "error");
       }
@@ -134,13 +136,31 @@ export default function Cart() {
   };
 
   const resetCart = () => {
-      setCart({ cartItems: [], totalPrice: 0 });
-      fetchCart(); // Optional: Refresh cart from backend
-    };
+    setCart({ cartItems: [], totalPrice: 0 });
+    fetchCart(); // Optional: Refresh cart from backend
+  };
 
-  if (loading) return <Container><p>Loading cart...</p></Container>;
+  if (loading) return <Container><p className="text-center">Loading cart...</p></Container>;
   if (error) return <Container><Alert variant="danger">{error}</Alert></Container>;
-  if (!cart || cart.cartItems.length === 0) return <Container><Alert variant="info">Your cart is empty.</Alert></Container>;
+  if (!cart || cart.cartItems.length === 0) return (
+    <Container className="d-flex justify-content-center align-items-center" style={{ minHeight: '50vh' }}>
+      <Alert variant="danger" className="text-center w-100 p-4">
+        <h4>Your cart is empty.</h4>
+        <Button
+          variant="success"
+          onClick={() => navigate("/products")}
+          className="mt-3 px-5 py-2" 
+          style={{
+            fontSize: '1.2rem',
+            borderRadius: '30px',
+            textTransform: 'uppercase',
+          }}
+        >
+          Shop Now
+        </Button>
+      </Alert>
+    </Container>
+  );
 
   return (
     <Container>

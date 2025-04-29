@@ -12,6 +12,7 @@ import Logout from './pages/Logout';
 import MyProfile from './pages/MyProfile';
 import ProductView from './pages/ProductView';
 import Cart from './pages/Cart';
+import OrderHistory from './pages/OrderHistory';
 
 function App() {
   const [user, setUser] = useState({
@@ -65,6 +66,7 @@ function App() {
               <Route path="/products/:productId" element={<ProductView />} />
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<RegistrationPage />} />
+              <Route path="/order-history" element={<OrderHistory />} />
               <Route path="/logout" element={<Logout />} />
             </Routes>
           </Container>

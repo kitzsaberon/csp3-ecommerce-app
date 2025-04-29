@@ -6,7 +6,9 @@ import UserContext from '../context/UserContext';
 export default function Products() {
   const { user } = useContext(UserContext);
   const [products, setProducts] = useState([]);
-  const [visibleProducts, setVisibleProducts] = useState(12); // Show 12 products initially
+  const [visibleProducts, setVisibleProducts] = useState(12);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [sortOption, setSortOption] = useState('');
 
   const fetchData = () => {
     const fetchUrl = user.isAdmin
@@ -20,7 +22,6 @@ export default function Products() {
     })
       .then((res) => res.json())
       .then((data) => {
-        console.log('Fetched products:', data);
         setProducts(data);
       })
       .catch((error) => console.error('Error fetching products:', error));
@@ -31,25 +32,47 @@ export default function Products() {
   }, [user]);
 
   const loadMoreProducts = () => {
-    setVisibleProducts((prev) => prev + 8); // Show 8 more products
+    setVisibleProducts((prev) => prev + 8);
   };
 
-  const displayedProducts = products.slice(0, visibleProducts);
+  const filteredProducts = products
+    .filter((product) => {
+      const matchesSearch =
+        product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        product.description.toLowerCase().includes(searchQuery.toLowerCase());
+      return matchesSearch;
+    })
+    .sort((a, b) => {
+      switch (sortOption) {
+        case 'name-asc':
+          return a.name.localeCompare(b.name);
+        case 'name-desc':
+          return b.name.localeCompare(a.name);
+        case 'price-asc':
+          return a.price - b.price;
+        case 'price-desc':
+          return b.price - a.price;
+        default:
+          return 0;
+      }
+    });
+
+  const displayedProducts = filteredProducts.slice(0, visibleProducts);
 
   return (
     <>
       {user.isAdmin ? (
-        <AdminView productsData={displayedProducts} fetchData={fetchData} />
+        <AdminView productsData={products} fetchData={fetchData} />
       ) : (
-        <UserView productsData={displayedProducts} />
-      )}
-
-      {visibleProducts < products.length && (
-        <div className="text-center mt-4">
-          <button onClick={loadMoreProducts} className="btn btn-outline-primary">
-            Load More .. 
-          </button>
-        </div>
+        <UserView
+          productsData={displayedProducts}
+          onLoadMore={loadMoreProducts}
+          canLoadMore={visibleProducts < filteredProducts.length}
+          searchQuery={searchQuery}
+          setSearchQuery={setSearchQuery}
+          sortOption={sortOption}
+          setSortOption={setSortOption}
+        />
       )}
     </>
   );

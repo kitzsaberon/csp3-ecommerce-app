@@ -41,7 +41,7 @@ export default function ProductView() {
             } else {
                 Swal.fire('Server Error', 'Internal Server Error. Please contact support.', 'error');
             }
-        })
+        }) 
         .catch(() => {
             Swal.fire('Network Error', 'Failed to connect to the server.', 'error');
         });
@@ -85,7 +85,7 @@ export default function ProductView() {
                             <Card.Subtitle>Description:</Card.Subtitle>
                             <Card.Text>{description}</Card.Text>
                             <Card.Subtitle>Price:</Card.Subtitle>
-                            <Card.Text>${price}</Card.Text>
+                            <Card.Text>₱{price}</Card.Text>
 
                             <InputGroup className="mb-3 justify-content-center">
                                 <Button variant="outline-secondary" onClick={decreaseQuantity}>-</Button>

@@ -12,19 +12,6 @@ export default function Banner() {
         <div className="container mt-5">
           <div className="row justify-content-center">
             <div className="col-md-8 text-center">
-              {/* Search Input and Button */}
-              <div className="input-group mb-3">
-                <input
-                  type="text"
-                  className="form-control"
-                  placeholder="Search for products"
-                  aria-label="Search for products"
-                  aria-describedby="search-btn"
-                />
-                <button className="btn btn-outline-secondary" type="button" id="search-btn">
-                  Search
-                </button>
-              </div>
 
               {/* Browse Products Button */}
               <Link to="/products">

@@ -1,15 +1,13 @@
+/* Global Styles */
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
+  font-family: 'Poppins', sans-serif; /* Poppins for body font */
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
 code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+  font-family: 'Roboto', monospace; /* Roboto for code */
 }
 
 /* Carousel Section */
@@ -37,11 +35,10 @@ code {
 
 .carousel-caption h3 {
   font-size: 2rem;
-  font-weight: bold;
+  font-weight: 600; /* Semi-bold for the heading */
 }
 
 .carousel-caption p {
   font-size: 1.25rem;
   margin-top: 10px;
 }
-
