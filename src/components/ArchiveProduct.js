@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { Button } from 'react-bootstrap';
 import Swal from 'sweetalert2';
+import { FaArchive, FaCheckCircle } from 'react-icons/fa';
+
 
 export default function ArchiveProduct({product, isActive, fetchData}) {
 
@@ -77,8 +79,14 @@ export default function ArchiveProduct({product, isActive, fetchData}) {
  
     return (
 		isActive ?
-			<Button variant="danger" size="sm" onClick={() => archiveToggle()}>Archive</Button>
+                <Button variant="danger" size="sm" className="d-flex align-items-center gap-1" onClick={archiveToggle}>
+                <FaArchive /> Archive
+                </Button>
+
         :
-			<Button variant="success" size="sm" onClick={() => activateToggle()}>Activate</Button>
+                <Button variant="success" size="sm" className="d-flex align-items-center gap-1" onClick={activateToggle}>
+                <FaCheckCircle /> Activate
+            </Button>
+            
     )
 }

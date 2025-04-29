@@ -1,7 +1,10 @@
 import React from 'react';
-import { Table, Button, Row, Col, Form } from 'react-bootstrap';
+import { Table, Button, Row, Col, Form, Badge } from 'react-bootstrap';
 import EditProduct from './EditProduct';
 import ArchiveProduct from './ArchiveProduct';
+import { FaCheckCircle, FaTimesCircle } from 'react-icons/fa';
+
+
 
 const ProductDetails = ({ products, currentPage, itemsPerPage, paginate, getPageNumbersToDisplay, totalPages, fetchData, searchQuery, setSearchQuery }) => {
   // Calculate the current products for pagination
@@ -44,9 +47,19 @@ const ProductDetails = ({ products, currentPage, itemsPerPage, paginate, getPage
                   <td>{product.name}</td>
                   <td>{product.description}</td>
                   <td>₱{Number(product.price).toLocaleString('en-PH', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
-                  <td className={product.isActive ? 'text-success' : 'text-danger'}>
-                    {product.isActive ? 'Available' : 'Unavailable'}
-                  </td>
+                  <td className="text-center">
+                  {product.isActive ? (
+                    <Badge bg="success" className="d-flex align-items-center justify-content-center gap-1 p-2">
+                      <FaCheckCircle /> Available
+                    </Badge>
+                  ) : (
+                    <Badge bg="danger" className="d-flex align-items-center justify-content-center gap-1 p-2">
+                      <FaTimesCircle /> Unavailable
+                    </Badge>
+                  )}
+                </td>
+
+
                   <td>
                     <EditProduct product={product} fetchData={fetchData} />
                   </td>

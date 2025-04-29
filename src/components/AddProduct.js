@@ -1,4 +1,3 @@
-// src/components/AddProduct.js
 import React, { useState } from 'react';
 import { Button, Modal, Form } from 'react-bootstrap';
 import Swal from 'sweetalert2';
@@ -66,6 +65,9 @@ const AddProduct = ({ fetchData }) => {
     }
   };
 
+  // Check if all fields are filled
+  const isFormValid = productName && productDescription && productPrice;
+
   return (
     <>
       <Button variant="primary" onClick={handleShowModal}>
@@ -113,7 +115,11 @@ const AddProduct = ({ fetchData }) => {
               <Button variant="secondary" onClick={handleCloseModal}>
                 Close
               </Button>
-              <Button variant="primary" type="submit">
+              <Button
+                variant="primary"
+                type="submit"
+                disabled={!isFormValid} // Disable the button if the form is invalid
+              >
                 Save Product
               </Button>
             </div>

@@ -3,6 +3,7 @@ import { Container, Card, Button, Row, Col, InputGroup, FormControl } from 'reac
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2'; 
 import UserContext from '../context/UserContext';
+import { FaMinus, FaPlus, FaShoppingCart } from 'react-icons/fa'; // Added react-icons
 
 export default function ProductView() {
     const { user } = useContext(UserContext);
@@ -14,6 +15,7 @@ export default function ProductView() {
     const [price, setPrice] = useState(0);
     const [quantity, setQuantity] = useState(1); 
 
+    // Add product to cart
     function addToCart(productId) {
         fetch('https://9791shtc1e.execute-api.us-west-2.amazonaws.com/production/cart/add-to-cart', {
             method: "POST",
@@ -36,7 +38,7 @@ export default function ProductView() {
             } else if (res.status === 200) {
                 Swal.fire('Success', 'Successfully added to cart!', 'success')
                     .then(() => {
-                        navigate('/cart'); // Navigate to the products page after success
+                        navigate('/cart'); // Navigate to the cart page after success
                     });
             } else {
                 Swal.fire('Server Error', 'Internal Server Error. Please contact support.', 'error');
@@ -47,6 +49,7 @@ export default function ProductView() {
         });
     }
 
+    // Fetch product data
     useEffect(() => {
         fetch(`https://9791shtc1e.execute-api.us-west-2.amazonaws.com/production/products/${productId}`)
             .then(res => {
@@ -65,6 +68,7 @@ export default function ProductView() {
             });
     }, [productId]);
 
+    // Quantity handlers
     const decreaseQuantity = () => {
         if (quantity > 1) {
             setQuantity(quantity - 1);
@@ -76,35 +80,57 @@ export default function ProductView() {
     };
 
     return (
-        <Container>
+        <Container className="py-5">
             <Row>
                 <Col lg={{ span: 6, offset: 3 }}>
-                    <Card>
+                    <Card className="shadow-lg">
                         <Card.Body className="text-center">
-                            <Card.Title>{name}</Card.Title>
-                            <Card.Subtitle>Description:</Card.Subtitle>
-                            <Card.Text>{description}</Card.Text>
-                            <Card.Subtitle>Price:</Card.Subtitle>
-                            <Card.Text>₱{price}</Card.Text>
+                            <Card.Title className="mb-3">{name}</Card.Title>
+                            <Card.Subtitle className="mb-2 text-muted">Description:</Card.Subtitle>
+                            <Card.Text className="mb-3">{description}</Card.Text>
+                            <Card.Subtitle className="mb-2 text-muted">Price:</Card.Subtitle>
+                            <Card.Text className="mb-4" style={{ color: '#28a745', fontSize: '1.5rem' }}>
+                                    ₱{price.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                                </Card.Text>
 
+
+
+                            {/* Quantity Input */}
                             <InputGroup className="mb-3 justify-content-center">
-                                <Button variant="outline-secondary" onClick={decreaseQuantity}>-</Button>
+                                <Button 
+                                    variant="outline-secondary" 
+                                    onClick={decreaseQuantity} 
+                                    disabled={quantity <= 1}
+                                >
+                                    <FaMinus />
+                                </Button>
                                 <FormControl
                                     value={quantity}
                                     readOnly
                                     className="text-center"
                                     style={{ width: "60px" }}
                                 />
-                                <Button variant="outline-secondary" onClick={increaseQuantity}>+</Button>
+                                <Button 
+                                    variant="outline-secondary" 
+                                    onClick={increaseQuantity}
+                                >
+                                    <FaPlus />
+                                </Button>
                             </InputGroup>
 
+                            {/* Add to Cart Button or Login Link */}
                             {
                                 user.id !== null ? (
-                                    <Button variant="primary" className="w-100" onClick={() => addToCart(productId)}>
+                                    <Button 
+                                        variant="primary" 
+                                        className="w-100 mt-3" 
+                                        onClick={() => addToCart(productId)}
+                                    >
+                                        <FaShoppingCart className="me-2" />
                                         Add to Cart
                                     </Button>
                                 ) : (
-                                    <Link className="btn btn-danger w-100" to="/login">
+                                    <Link className="btn btn-danger w-100 mt-3" to="/login">
                                         Login to Add to Cart
                                     </Link>
                                 )
@@ -114,5 +140,5 @@ export default function ProductView() {
                 </Col>
             </Row>
         </Container>
-    )
+    );
 }

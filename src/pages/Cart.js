@@ -1,10 +1,11 @@
 import { useEffect, useState, useContext } from "react";
-import { Container, Table, Button, Alert, Form } from "react-bootstrap";
+import { Container, Table, Button, Alert, Form, Row, Col } from "react-bootstrap";
 import UserContext from "../context/UserContext";
 import CartContext from "../context/CartContext";
 import Swal from 'sweetalert2';
 import CheckoutOrder from '../components/CheckoutOrder';
 import { useNavigate } from "react-router-dom"; // Import useNavigate
+import { FaTrashAlt, FaPlus, FaMinus, FaShoppingCart } from 'react-icons/fa'; // Icons
 
 export default function Cart() {
   const { user } = useContext(UserContext);
@@ -30,7 +31,7 @@ export default function Cart() {
         if (data.cart) {
           setCart(data.cart);
         } else {
-          setError("Cart not found.");
+          setCart({ cartItems: [], totalPrice: 0 }); // If cart not found, set empty cart state
         }
         setLoading(false);
       })
@@ -137,7 +138,7 @@ export default function Cart() {
 
   const resetCart = () => {
     setCart({ cartItems: [], totalPrice: 0 });
-    fetchCart(); // Optional: Refresh cart from backend
+    fetchCart(); 
   };
 
   if (loading) return <Container><p className="text-center">Loading cart...</p></Container>;
@@ -156,7 +157,7 @@ export default function Cart() {
             textTransform: 'uppercase',
           }}
         >
-          Shop Now
+          Shop Now <FaShoppingCart />
         </Button>
       </Alert>
     </Container>
@@ -187,11 +188,13 @@ export default function Cart() {
                 </td>
                 <td>
                   <Button
-                    variant="secondary"
+                    variant="outline-secondary"
                     size="sm"
                     disabled={updatingId === productId}
                     onClick={() => updateQuantity(productId, item.quantity - 1)}
-                  >-</Button>{" "}
+                  >
+                    <FaMinus />
+                  </Button>{" "}
                   <Form.Control
                     type="number"
                     value={item.quantity}
@@ -201,21 +204,23 @@ export default function Cart() {
                     disabled={updatingId === productId}
                   />{" "}
                   <Button
-                    variant="secondary"
+                    variant="outline-secondary"
                     size="sm"
                     disabled={updatingId === productId}
                     onClick={() => updateQuantity(productId, item.quantity + 1)}
-                  >+</Button>
+                  >
+                    <FaPlus />
+                  </Button>
                 </td>
                 <td>₱{item.subtotal.toFixed(2)}</td>
                 <td>
                   <Button
-                    variant="danger"
+                    variant="outline-danger"
                     size="sm"
                     onClick={() => removeItem(productId)}
                     disabled={updatingId === productId}
                   >
-                    Remove
+                    <FaTrashAlt />
                   </Button>
                 </td>
               </tr>
@@ -227,10 +232,27 @@ export default function Cart() {
           </tr>
         </tbody>
       </Table>
-      <Button variant="danger" onClick={clearCart} className="w-100">
-        Clear Cart
-      </Button>
-      <CheckoutOrder userId={user.id} resetCart={resetCart} />
+      <Row className="mb-3">
+        <Col md={6}>
+        <Button
+      onClick={clearCart}
+     className="btn btn-danger w-100 py-3 px-4"
+      style={{
+        fontWeight: 'bold',  
+        borderRadius: '30px',  
+        boxShadow: '0 4px 8px rgba(255, 0, 0, 0.2)',  
+        transition: 'background-color 0.3s, transform 0.3s', 
+      }}
+      onMouseEnter={(e) => e.target.style.transform = 'scale(1.05)'} 
+      onMouseLeave={(e) => e.target.style.transform = 'scale(1)'} 
+    >
+      Clear Cart
+    </Button>
+        </Col>
+        <Col md={6}>
+          <CheckoutOrder userId={user.id} resetCart={resetCart} />
+        </Col>
+      </Row>
     </Container>
   );
 }

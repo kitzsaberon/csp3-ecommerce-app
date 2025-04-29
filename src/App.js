@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'; 
-import { Container } from 'react-bootstrap'; 
-import AppNavbar from './components/AppNavbar'; 
+import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom'; // Import Navigate here
+import { Container } from 'react-bootstrap';
+import AppNavbar from './components/AppNavbar';
 import Home from './pages/Home';
 import Login from './pages/Login';
 import { UserProvider } from './context/UserContext';
-import { CartProvider } from './context/CartContext'; // Import CartProvider
+import { CartProvider } from './context/CartContext'; 
 import RegistrationPage from './pages/RegistrationPage';
 import Products from './pages/Products';
 import Logout from './pages/Logout';
@@ -54,19 +54,22 @@ function App() {
 
   return (
     <UserProvider value={{ user, setUser, unsetUser }}>
-      <CartProvider> {/* Wrap App with CartProvider */}
+      <CartProvider> 
         <Router>
           <AppNavbar />
           <Container className="mt-1">
             <Routes>
               <Route path="/" element={<Home />} />
-              <Route path="/products" element={<Products />} />
-              <Route path="/myProfile" element={<MyProfile />} />
-              <Route path="/cart" element={<Cart />} />
+              <Route path="/products" element={<Products />} /> {/* Anyone can view products */}
+              <Route path="/myProfile" element={user.id ? <MyProfile /> : <Navigate to="/login" />} />
+              <Route path="/cart" element={user.id ? <Cart /> : <Navigate to="/login" />} />
               <Route path="/products/:productId" element={<ProductView />} />
-              <Route path="/login" element={<Login />} />
-              <Route path="/register" element={<RegistrationPage />} />
-              <Route path="/order-history" element={<OrderHistory />} />
+              
+              {/* Prevent logged-in users from accessing login and registration pages */}
+              <Route path="/login" element={user.id ? <Navigate to="/products" /> : <Login />} />
+              <Route path="/register" element={user.id ? <Navigate to="/myProfile" /> : <RegistrationPage />} />
+
+              <Route path="/order-history" element={user.id ? <OrderHistory /> : <Navigate to="/login" />} />
               <Route path="/logout" element={<Logout />} />
             </Routes>
           </Container>

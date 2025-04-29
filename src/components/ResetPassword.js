@@ -1,79 +1,93 @@
+// src/components/ResetPassword.js
 import React, { useState } from 'react';
+import { Button, Form, Spinner } from 'react-bootstrap';
 
 const ResetPassword = () => {
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [message, setMessage] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [passwords, setPasswords] = useState({
+    currentPassword: '',
+    newPassword: '',
+    confirmPassword: ''
+  });
 
-  const handleResetPassword = async (e) => {
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setPasswords((prev) => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
 
-    if (password !== confirmPassword) {
-      setMessage('Passwords do not match');
+    if (passwords.newPassword !== passwords.confirmPassword) {
+      alert('Passwords do not match!');
+      setLoading(false);
       return;
     }
 
-    try {
-      const token = localStorage.getItem('token');
-      const response = await fetch('https://9791shtc1e.execute-api.us-west-2.amazonaws.com/production/users/update-password', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({ newPassword: password }),
+    // Call your API to reset the password
+    await fetch('https://your-api-endpoint.com/reset-password', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${localStorage.getItem('token')}`
+      },
+      body: JSON.stringify(passwords)
+    })
+      .then((res) => res.json())
+      .then(() => {
+        alert('Password reset successfully!');
+      })
+      .catch(() => {
+        alert('Error resetting password');
+      })
+      .finally(() => {
+        setLoading(false);
       });
-
-      if (response.ok) {
-        setMessage('Password reset successfully');
-        setPassword('');
-        setConfirmPassword('');
-      } else {
-        const errorData = await response.json();
-        setMessage(errorData.message);
-      }
-    } catch (error) {
-      setMessage('An error occurred. Please try again.');
-      console.error(error);
-    }
   };
 
   return (
-    <div className="container">
-      <h2>Reset Password</h2>
-      <form onSubmit={handleResetPassword}>
-        <div className="mb-3">
-          <label htmlFor="password" className="form-label">
-            New Password
-          </label>
-          <input
-            type="password"
-            className="form-control"
-            id="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
-        </div>
-        <div className="mb-3">
-          <label htmlFor="confirmPassword" className="form-label">
-            Confirm Password
-          </label>
-          <input
-            type="password"
-            className="form-control"
-            id="confirmPassword"
-            value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
-            required
-          />
-        </div>
-        {message && <div className="alert alert-danger">{message}</div>}
-        <button type="submit" className="btn btn-primary">
-          Reset Password
-        </button>
-      </form>
-    </div>
+    <Form onSubmit={handleSubmit}>
+      <Form.Group controlId="formCurrentPassword">
+        <Form.Label>Current Password</Form.Label>
+        <Form.Control
+          type="password"
+          placeholder="Enter Current Password"
+          name="currentPassword"
+          value={passwords.currentPassword}
+          onChange={handleChange}
+        />
+      </Form.Group>
+
+      <Form.Group controlId="formNewPassword">
+        <Form.Label>New Password</Form.Label>
+        <Form.Control
+          type="password"
+          placeholder="Enter New Password"
+          name="newPassword"
+          value={passwords.newPassword}
+          onChange={handleChange}
+        />
+      </Form.Group>
+
+      <Form.Group controlId="formConfirmPassword">
+        <Form.Label>Confirm New Password</Form.Label>
+        <Form.Control
+          type="password"
+          placeholder="Confirm New Password"
+          name="confirmPassword"
+          value={passwords.confirmPassword}
+          onChange={handleChange}
+        />
+      </Form.Group>
+
+      <Button variant="primary" type="submit" disabled={loading}>
+        {loading ? <Spinner animation="border" size="sm" /> : 'Reset Password'}
+      </Button>
+    </Form>
   );
 };
 

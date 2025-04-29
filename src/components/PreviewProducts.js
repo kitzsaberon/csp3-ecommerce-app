@@ -24,7 +24,10 @@ export default function PreviewProducts(props) {
                 </Card.Body>
 
                 <Card.Footer className="bg-light border-0 text-center p-4">
-                    <h5 className="mb-3 text-success fs-4">₱{price}</h5>
+                <h5 className="mb-3 text-success fs-4">
+                        ₱{price.toLocaleString('en-PH', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                        </h5>
+
                     <div className="d-flex justify-content-center gap-3">
                         <Button
                             variant="outline-primary"

@@ -1,132 +1,113 @@
-import { useState, useEffect } from 'react';
+// src/components/UpdateProfile.js
+import React, { useState, useEffect } from 'react';
+import { Button, Form, Spinner } from 'react-bootstrap';
 
+const UpdateProfile = ({ currentDetails, onUpdate }) => {
+  const [loading, setLoading] = useState(false);
+  const [formData, setFormData] = useState({
+    firstName: '',
+    lastName: '',
+    email: '',
+    mobileNo: ''
+  });
 
-
-export default function UpdateProfile( {onUpdate} ) {
-
-    const [formData, setFormData] = useState({
-        firstName: '',
-        lastName: '',
-        mobileNo: ''
+  // Initialize form data with current details
+  useEffect(() => {
+    if (currentDetails) {
+      setFormData({
+        firstName: currentDetails.firstName,
+        lastName: currentDetails.lastName,
+        email: currentDetails.email,
+        mobileNo: currentDetails.mobileNo
       });
+    }
+  }, [currentDetails]);
 
-      useEffect(() => {
-        const loadProfile = async () => {
-          try {
-            const res = await fetch('https://9791shtc1e.execute-api.us-west-2.amazonaws.com/production/users/details', {
-              headers: {
-                'Content-Type': 'application/json',
-                Authorization: `Bearer ${localStorage.getItem('token')}`
-              }
-            });
-            const data = await res.json();
-            if (res.ok && data) {
-              setFormData({
-                firstName: data.firstName || '',
-                lastName: data.lastName || '',
-                mobileNo: data.mobileNo || ''
-              });
-            } else {
-              alert(data.message || 'Failed to load profile.');
-            }
-          } catch (err) {
-            alert('Failed to fetch profile details:');
-            alert('An error occurred while loading profile.');
-          }
-        };
-    
-        loadProfile();
-      }, []);
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value
+    }));
+  };
 
-      const handleChange = (e) => {
-        const { id, value } = e.target;
-        setFormData(prev => ({
-          ...prev,
-          [id]: value
-        }));
-      };
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    
+    // Call your API to update user details
+    await fetch('https://your-api-endpoint.com/update', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${localStorage.getItem('token')}`
+      },
+      body: JSON.stringify(formData)
+    })
+      .then((res) => res.json())
+      .then(() => {
+        onUpdate(); // Callback to refresh user details in MyProfile
+        alert('Profile updated successfully!');
+      })
+      .catch(() => {
+        alert('Error updating profile');
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  };
 
-      const handleSubmit = async (e) => {
-        e.preventDefault();
-    
-        try {
-          const res = await fetch('http://localhost:4000/users/profile', {
-            method: 'PUT',
-            headers: {
-              'Content-Type': 'application/json',
-              Authorization: `Bearer ${localStorage.getItem('token')}`
-            },
-            body: JSON.stringify(formData)
-          });
-    
-          const data = await res.json();
-          if (res.ok) {
-           alert('Profile updated successfully!');
-            if (onUpdate) onUpdate();
-          } else {
-            alert(data.message || 'Failed to update profile.');
-          }
-        } catch (err) {
-          console.error('Update failed:', err);
-          alert('An error occurred.');
-        }
-      }
+  return (
+    <Form onSubmit={handleSubmit}>
+      <Form.Group controlId="formFirstName">
+        <Form.Label>First Name</Form.Label>
+        <Form.Control
+          type="text"
+          placeholder="Enter First Name"
+          name="firstName"
+          value={formData.firstName}
+          onChange={handleChange}
+        />
+      </Form.Group>
 
-      
-      return (
-        <div className="container my-4">
-          <div className="row justify-content-center">
-            <div className="col-md-6">
-              <div className="card shadow-sm">
-                <div className="card-body">
-                  <h4 className="card-title mb-4 text-center">Update Profile</h4>
-                  <form onSubmit={handleSubmit}>
-                    <div className="mb-3">
-                      <label htmlFor="firstName" className="form-label">First Name</label>
-                      <input
-                        type="text"
-                        className="form-control"
-                        id="firstName"
-                        value={formData.firstName}
-                        onChange={handleChange}
-                        required
-                      />
-                    </div>
-    
-                    <div className="mb-3">
-                      <label htmlFor="lastName" className="form-label">Last Name</label>
-                      <input
-                        type="text"
-                        className="form-control"
-                        id="lastName"
-                        value={formData.lastName}
-                        onChange={handleChange}
-                        required
-                      />
-                    </div>
-    
-                    <div className="mb-3">
-                      <label htmlFor="mobileNo" className="form-label">Mobile No</label>
-                      <input
-                        type="tel"
-                        className="form-control"
-                        id="mobileNo"
-                        value={formData.mobileNo}
-                        onChange={handleChange}
-                        required
-                      />
-                    </div>
-    
-                    <div className="d-grid">
-                      <button type="submit" className="btn btn-primary">
-                        Update Profile
-                      </button>
-                    </div>
-                  </form>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      );
-}
+      <Form.Group controlId="formLastName">
+        <Form.Label>Last Name</Form.Label>
+        <Form.Control
+          type="text"
+          placeholder="Enter Last Name"
+          name="lastName"
+          value={formData.lastName}
+          onChange={handleChange}
+        />
+      </Form.Group>
+
+      <Form.Group controlId="formEmail">
+        <Form.Label>Email</Form.Label>
+        <Form.Control
+          type="email"
+          placeholder="Enter Email"
+          name="email"
+          value={formData.email}
+          onChange={handleChange}
+        />
+      </Form.Group>
+
+      <Form.Group controlId="formMobileNo">
+        <Form.Label>Mobile No</Form.Label>
+        <Form.Control
+          type="text"
+          placeholder="Enter Mobile No"
+          name="mobileNo"
+          value={formData.mobileNo}
+          onChange={handleChange}
+        />
+      </Form.Group>
+
+      <Button variant="primary" type="submit" disabled={loading}>
+        {loading ? <Spinner animation="border" size="sm" /> : 'Update Profile'}
+      </Button>
+    </Form>
+  );
+};
+
+export default UpdateProfile;

@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { Button, Modal, Form } from 'react-bootstrap';
 import Swal from 'sweetalert2';
+import { FaEdit } from 'react-icons/fa';
+
 
 export default function EditProduct({ product, fetchData }) {
 
@@ -65,9 +67,10 @@ export default function EditProduct({ product, fetchData }) {
 
   return (
     <>
-      <Button variant="primary" size="sm" type="submit" className="mx-1" onClick={editOpen}>
-        Edit
-      </Button>
+        <Button variant="warning" size="sm" className="mx-1 d-flex align-items-center gap-1" onClick={editOpen}>
+          <FaEdit /> Edit
+        </Button>
+
 
       <Modal show={showEdit} onHide={editClose}>
         <Form onSubmit={(e) => editProduct(e, productId)}>
