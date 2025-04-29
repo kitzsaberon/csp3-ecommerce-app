@@ -59,13 +59,19 @@ export default function MyProfile() {
                 <>
                   {/* Full Name */}
                   <Card.Text className="text-center mb-4">
-                    <h5>
+                  <Card.Text className="text-center mb-4">
+                  <div className="text-center mb-4">
+                
                       <strong>
                         {details.firstName.charAt(0).toUpperCase() + details.firstName.slice(1).toLowerCase()}
                         {' '}
                         {details.lastName.charAt(0).toUpperCase() + details.lastName.slice(1).toLowerCase()}
                       </strong>
-                    </h5>
+                  
+                  </div>
+                </Card.Text>
+
+
                   </Card.Text>
   
                   <hr className="bg-dark mb-4" />

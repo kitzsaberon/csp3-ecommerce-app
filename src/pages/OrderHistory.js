@@ -1,13 +1,16 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import { Container, Table, Spinner, Alert } from 'react-bootstrap';
+import UserContext from '../context/UserContext';
 
 function OrderHistory() {
+  const { user } = useContext(UserContext); // ✅ Access user from context
+
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
   useEffect(() => {
-    fetch('https://9791shtc1e.execute-api.us-west-2.amazonaws.com/production/cart/orders/my-orders', {
+    fetch('https://9791shtc1e.execute-api.us-west-2.amazonaws.com/production/orders/my-orders', {
       headers: {
         Authorization: `Bearer ${localStorage.getItem('token')}`,
       },
@@ -19,14 +22,15 @@ function OrderHistory() {
         return res.json();
       })
       .then((data) => {
-        setOrders(data);
-        setLoading(false);
+        console.log("Logged-in User ID:", user?.id);  
+        console.log('Data', data);
+        setOrders(data.orders || []);
       })
       .catch((err) => {
         setError(err.message);
-        setLoading(false);
-      });
-  }, []);
+      })
+      .finally(() => setLoading(false));
+  }, [user]);
 
   return (
     <Container className="mt-5">
