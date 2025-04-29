@@ -3,6 +3,8 @@ import { Container, Table, Button, Alert, Form } from "react-bootstrap";
 import UserContext from "../context/UserContext";
 import CartContext from "../context/CartContext";
 import Swal from 'sweetalert2';
+import CheckoutOrder from '../components/CheckoutOrder';
+import { useNavigate } from 'react-router-dom';
 
 export default function Cart() {
   const { user } = useContext(UserContext);
@@ -10,6 +12,7 @@ export default function Cart() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [updatingId, setUpdatingId] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchCart();
@@ -130,6 +133,11 @@ export default function Cart() {
     }
   };
 
+  const resetCart = () => {
+      setCart({ cartItems: [], totalPrice: 0 });
+      fetchCart(); // Optional: Refresh cart from backend
+    };
+
   if (loading) return <Container><p>Loading cart...</p></Container>;
   if (error) return <Container><Alert variant="danger">{error}</Alert></Container>;
   if (!cart || cart.cartItems.length === 0) return <Container><Alert variant="info">Your cart is empty.</Alert></Container>;
@@ -202,6 +210,7 @@ export default function Cart() {
       <Button variant="danger" onClick={clearCart} className="w-100">
         Clear Cart
       </Button>
+      <CheckoutOrder userId={user.id} resetCart={resetCart} />
     </Container>
   );
 }
