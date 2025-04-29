@@ -19,7 +19,7 @@ export default function ProductCard ({productProp}) {
               <Card.Text className="mb-2">
                 <strong>Price:</strong> PHP {price}
               </Card.Text>
-              <Link className="btn btn-outline-primary w-100 mt-auto" to={`/product/${_id}`}>
+              <Link className="btn btn-outline-primary w-100 mt-auto" to={`/products/${_id}`}>
                 View Product
               </Link>
             </div>

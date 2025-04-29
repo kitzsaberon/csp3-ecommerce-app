@@ -9,6 +9,7 @@ import RegistrationPage from './pages/RegistrationPage';
 import Products from './pages/Products';
 import Logout from './pages/Logout';
 import MyProfile from './pages/MyProfile';
+import ProductView from './pages/ProductView';
 
 
 function App() {
@@ -64,6 +65,7 @@ useEffect(() => {
           <Route path="/" element={<Home />} /> 
           <Route path="/products" element={<Products />} />
           <Route path="/myProfile" element={<MyProfile />} />
+          <Route path="/products/:productId" element={<ProductView />} />
           <Route path="/login" element={<Login />} /> 
           <Route path="/register" element={<RegistrationPage />} /> 
           <Route path="/logout" element={<Logout />} /> 
