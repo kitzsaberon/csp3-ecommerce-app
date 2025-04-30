@@ -2,7 +2,7 @@ import { Col, Card, Button } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 
 export default function PreviewProducts(props) {
-    const { breakPoint, data } = props;
+    const { data } = props;
     const { _id, name, description, price } = data;
 
     return (

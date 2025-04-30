@@ -1,6 +1,5 @@
 import { Card, Col } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
-import { Badge } from 'react-bootstrap';
 
 // Helper function to format the price
 const formatPrice = (price) => {

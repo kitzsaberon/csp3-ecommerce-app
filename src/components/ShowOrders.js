@@ -4,10 +4,10 @@ const ShowOrders = () => {
   const [orders, setOrders] = useState([]);
   const [productMap, setProductMap] = useState({});
 
-  useEffect(() => {
-    const token = localStorage.getItem('token');
+  const token = localStorage.getItem('token');
 
-    // Step 1: Fetch orders
+  // First useEffect: fetch orders
+  useEffect(() => {
     fetch('https://9791shtc1e.execute-api.us-west-2.amazonaws.com/production/orders/all-orders', {
       headers: {
         'Authorization': `Bearer ${token}`,
@@ -16,46 +16,46 @@ const ShowOrders = () => {
     })
       .then(res => res.json())
       .then(data => {
-        const orders = data.orders || [];
-        setOrders(orders);
-
-        // Step 2: Collect unique product IDs
-        const productIds = Array.from(
-          new Set(
-            orders.flatMap(order =>
-              order.productOrdered?.map(p => p.productId)
-            )
-          )
-        );
-
-        // Step 3: Fetch each product individually
-        productIds.forEach(productId => {
-          if (!productMap[productId]) {
-            fetch(`https://9791shtc1e.execute-api.us-west-2.amazonaws.com/production/products/${productId}`, {
-              headers: {
-                'Authorization': `Bearer ${token}`,
-                'Content-Type': 'application/json'
-              }
-            })
-              .then(res => res.json())
-              .then(product => {
-                setProductMap(prev => ({
-                  ...prev,
-                  [productId]: product.name || 'Unknown Product'
-                }));
-              })
-              .catch(err => {
-                console.error(`Failed to fetch product ${productId}:`, err);
-                setProductMap(prev => ({
-                  ...prev,
-                  [productId]: 'Unknown Product'
-                }));
-              });
-          }
-        });
+        setOrders(data.orders || []);
       })
       .catch(err => console.error('Error fetching orders:', err));
-  }, []);
+  }, [token]);
+
+  // Second useEffect: fetch product names once orders are loaded
+  useEffect(() => {
+    const productIds = Array.from(
+      new Set(
+        orders.flatMap(order =>
+          order.productOrdered?.map(p => p.productId)
+        )
+      )
+    );
+
+    productIds.forEach(productId => {
+      if (!productMap[productId]) {
+        fetch(`https://9791shtc1e.execute-api.us-west-2.amazonaws.com/production/products/${productId}`, {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          }
+        })
+          .then(res => res.json())
+          .then(product => {
+            setProductMap(prev => ({
+              ...prev,
+              [productId]: product.name || 'Unknown Product'
+            }));
+          })
+          .catch(err => {
+            console.error(`Failed to fetch product ${productId}:`, err);
+            setProductMap(prev => ({
+              ...prev,
+              [productId]: 'Unknown Product'
+            }));
+          });
+      }
+    });
+  }, [orders, productMap, token]);
 
   const formatDate = (dateStr) => {
     const date = new Date(dateStr);
@@ -106,11 +106,11 @@ const ShowOrders = () => {
                 ))}
               </ul>
               <p><strong>Total:</strong> {new Intl.NumberFormat('en-PH', {
-                    style: 'currency',
-                    currency: 'PHP',
-                    minimumFractionDigits: 2,
-                    maximumFractionDigits: 2
-                }).format(order.totalPrice)}</p>
+                style: 'currency',
+                currency: 'PHP',
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+              }).format(order.totalPrice)}</p>
 
             </div>
           ))}

@@ -6,7 +6,7 @@ import { FaArchive, FaCheckCircle } from 'react-icons/fa';
 
 export default function ArchiveProduct({product, isActive, fetchData}) {
 
-    const [productId, setProductId] = useState(product._id);
+    const [productId] = useState(product._id);
 
     const archiveToggle = () => {
         fetch(`https://9791shtc1e.execute-api.us-west-2.amazonaws.com/production/products/${productId}/archive`, {
@@ -80,7 +80,7 @@ export default function ArchiveProduct({product, isActive, fetchData}) {
     return (
 		isActive ?
                 <Button variant="danger" size="sm" className="d-flex align-items-center gap-1" onClick={archiveToggle}>
-                <FaArchive /> Archive
+                <FaArchive /> Disable
                 </Button>
 
         :

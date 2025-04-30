@@ -6,7 +6,7 @@ import { FaEdit } from 'react-icons/fa';
 
 export default function EditProduct({ product, fetchData }) {
 
-  const [productId, setProductId] = useState(product._id);
+  const [productId] = useState(product._id);
   const [name, setName] = useState(product.name);
   const [description, setDescription] = useState(product.description);
   const [price, setPrice] = useState(product.price);

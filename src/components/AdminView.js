@@ -35,15 +35,12 @@ const AdminView = ({ productsData, fetchData }) => {
   }, [searchQuery, products]);
 
   // Pagination logic
-  const indexOfLastProduct = currentPage * itemsPerPage;
-  const indexOfFirstProduct = indexOfLastProduct - itemsPerPage;
-  const currentProducts = filteredProducts.slice(indexOfFirstProduct, indexOfLastProduct);
+
   const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   const getPageNumbersToDisplay = () => {
-    const rangeSize = 3;
     let startPage = Math.max(currentPage - 2, 1);
     let endPage = Math.min(currentPage + 2, totalPages);
 
