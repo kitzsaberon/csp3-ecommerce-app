@@ -8,7 +8,7 @@ const ShowOrders = () => {
 
   // First useEffect: fetch orders
   useEffect(() => {
-    fetch(`${process.env.REACT_APP_API_BASE_URL}/all-orders`, {
+    fetch(`${process.env.REACT_APP_API_BASE_URL}/orders/all-orders`, {
       headers: {
         'Authorization': `Bearer ${token}`,
         'Content-Type': 'application/json',

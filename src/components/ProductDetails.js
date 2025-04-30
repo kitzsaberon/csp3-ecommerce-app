@@ -32,13 +32,7 @@ const ProductDetails = ({ products, currentPage, itemsPerPage, paginate, getPage
     <Table striped bordered hover responsive>
       <thead>
         <tr className="text-center">
-          <th>ID</th>
-          <th>Name</th>
-          <th>Description</th>
-          <th>Price</th>
-          <th>Image</th> {/* Add image column */}
-          <th>Availability</th>
-          <th colSpan={2}>Actions</th>
+          <th>ID</th><th>Name</th><th>Description</th><th>Price</th><th>Image</th><th>Availability</th><th colSpan={2}>Actions</th>
         </tr>
       </thead>
       <tbody>
@@ -48,8 +42,6 @@ const ProductDetails = ({ products, currentPage, itemsPerPage, paginate, getPage
             <td>{product.name}</td>
             <td>{product.description}</td>
             <td>₱{Number(product.price).toLocaleString('en-PH', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
-            
-            {/* Display the product image */}
             <td>
               {product.image ? (
                 <img 
@@ -61,7 +53,6 @@ const ProductDetails = ({ products, currentPage, itemsPerPage, paginate, getPage
                 <span>No image available</span>
               )}
             </td>
-
             <td className="text-center">
               {product.isActive ? (
                 <Badge bg="success" className="d-flex align-items-center justify-content-center gap-1 p-2">
@@ -73,19 +64,15 @@ const ProductDetails = ({ products, currentPage, itemsPerPage, paginate, getPage
                 </Badge>
               )}
             </td>
-
-            <td>
-              <EditProduct product={product} fetchData={fetchData} />
-            </td>
-            <td>
-              <ArchiveProduct product={product} isActive={product.isActive} fetchData={fetchData} />
-            </td>
+            <td><EditProduct product={product} fetchData={fetchData} /></td>
+            <td><ArchiveProduct product={product} isActive={product.isActive} fetchData={fetchData} /></td>
           </tr>
         ))}
       </tbody>
     </Table>
   </Col>
 </Row>
+
 
 
 {/* Pagination Controls */}
