@@ -33,7 +33,7 @@ const ShowOrders = () => {
 
     productIds.forEach(productId => {
       if (!productMap[productId]) {
-        fetch(`https://9791shtc1e.execute-api.us-west-2.amazonaws.com/production/products/${productId}`, {
+        fetch(`${process.env.REACT_APP_API_BASE_URL}/products/${productId}`, {
           headers: {
             'Authorization': `Bearer ${token}`,
             'Content-Type': 'application/json'

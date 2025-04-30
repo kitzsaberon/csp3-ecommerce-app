@@ -13,7 +13,7 @@ const CheckoutOrder = ({ userId, resetCart }) => {
     setErrorMessage(null);
 
     try {
-      const response = await fetch('https://9791shtc1e.execute-api.us-west-2.amazonaws.com/production/orders/checkout', {
+      const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/orders/checkout`, {
         method: 'POST',
         headers: {
           "Content-Type": "application/json",

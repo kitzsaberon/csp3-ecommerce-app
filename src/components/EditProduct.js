@@ -20,7 +20,7 @@ export default function EditProduct({ product, fetchData }) {
     e.preventDefault();
 
     try {
-      const response = await fetch(`https://9791shtc1e.execute-api.us-west-2.amazonaws.com/production/products/${productId}/update`, {
+      const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/products/${productId}/update`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",

@@ -14,7 +14,8 @@ export default function Login() {
   function authenticate(e) {
     e.preventDefault();
 
-    fetch('https://9791shtc1e.execute-api.us-west-2.amazonaws.com/production/users/login', {
+
+    fetch(`${process.env.REACT_APP_API_BASE_URL}/users/login`, {
       method: 'POST',
       headers: {
         "Content-Type": "application/json"
@@ -57,7 +58,7 @@ export default function Login() {
   }
 
   function retrieveUserDetails(token) {
-    fetch('https://9791shtc1e.execute-api.us-west-2.amazonaws.com/production/users/details', {
+    fetch(`${process.env.REACT_APP_API_BASE_URL}/users/details`, {
       headers: {
         Authorization: `Bearer ${token}`
       }

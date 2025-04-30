@@ -16,7 +16,7 @@ export default function MyProfile() {
 
   const fetchDetails = () => {
     setLoading(true);
-    fetch('https://9791shtc1e.execute-api.us-west-2.amazonaws.com/production/users/details', {
+    fetch(`${process.env.REACT_APP_API_BASE_URL}/users/details`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',

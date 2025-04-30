@@ -17,7 +17,7 @@ export default function ProductView() {
 
     // Add product to cart
     function addToCart(productId) {
-        fetch('https://9791shtc1e.execute-api.us-west-2.amazonaws.com/production/cart/add-to-cart', {
+        fetch(`${process.env.REACT_APP_API_BASE_URL}/cart/add-to-cart`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -51,7 +51,7 @@ export default function ProductView() {
 
     // Fetch product data
     useEffect(() => {
-        fetch(`https://9791shtc1e.execute-api.us-west-2.amazonaws.com/production/products/${productId}`)
+        fetch(`${process.env.REACT_APP_API_BASE_URL}/products/${productId}`)
             .then(res => {
                 if (!res.ok) {
                     throw new Error(`HTTP error! Status: ${res.status}`);

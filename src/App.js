@@ -26,8 +26,6 @@ function App() {
   }
 
   useEffect(() => {
-    console.log(user);
-    console.log(localStorage);
   }, [user]);
 
   useEffect(() => {

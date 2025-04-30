@@ -33,7 +33,7 @@ const AddProduct = ({ fetchData }) => {
     };
 
     try {
-      const response = await fetch('https://9791shtc1e.execute-api.us-west-2.amazonaws.com/production/products/', {
+      const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/products/`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

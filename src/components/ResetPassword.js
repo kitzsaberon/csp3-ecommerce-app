@@ -29,7 +29,7 @@ const ResetPassword = () => {
     }
 
     // Call your API to reset the password
-    await fetch('https://your-api-endpoint.com/reset-password', {
+    await fetch(`${process.env.REACT_APP_API_BASE_URL}/reset-password`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

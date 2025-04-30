@@ -37,7 +37,7 @@ const RegistrationPage = () => {
   function registerUser(e) {
     e.preventDefault();
 
-    fetch('https://9791shtc1e.execute-api.us-west-2.amazonaws.com/production/users/register', {
+    fetch(`${process.env.REACT_APP_API_BASE_URL}/users/register`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'

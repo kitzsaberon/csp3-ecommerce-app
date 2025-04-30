@@ -36,7 +36,7 @@ const UpdateProfile = ({ currentDetails, onUpdate }) => {
     setLoading(true);
     
     // Call your API to update user details
-    await fetch('https://your-api-endpoint.com/update', {
+    await fetch(`${process.env.REACT_APP_API_BASE_URL}/update`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

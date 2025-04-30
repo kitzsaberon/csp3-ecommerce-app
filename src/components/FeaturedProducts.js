@@ -9,7 +9,7 @@ export default function FeaturedProducts() {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    fetch('https://9791shtc1e.execute-api.us-west-2.amazonaws.com/production/products/active')
+    fetch(`${process.env.REACT_APP_API_BASE_URL}/products/active`)
       .then(res => res.json())
       .then(data => {
         if (data.length === 0) {

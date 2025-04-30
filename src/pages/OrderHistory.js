@@ -9,7 +9,7 @@ function OrderHistory() {
   const [error, setError] = useState('');
 
   useEffect(() => {
-    fetch('https://9791shtc1e.execute-api.us-west-2.amazonaws.com/production/orders/my-orders', {
+    fetch(`${process.env.REACT_APP_API_BASE_URL}/orders/my-orders`, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem('token')}`,
       },
@@ -21,8 +21,6 @@ function OrderHistory() {
         return res.json();
       })
       .then((data) => {
-        console.log("Logged-in User ID:", user?.id);  
-        console.log('Orders:', data.orders);
         setOrders(data.orders || []);
       })
       .catch((err) => {
