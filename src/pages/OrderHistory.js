@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useContext } from 'react';
-import { Container, Table, Spinner, Alert, Card } from 'react-bootstrap';
+import { Container, Table, Spinner, Alert, Card, Image } from 'react-bootstrap';
 import UserContext from '../context/UserContext';
 
 function OrderHistory() {
@@ -7,6 +7,7 @@ function OrderHistory() {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [products, setProducts] = useState({});  // Store product details
 
   useEffect(() => {
     fetch(`${process.env.REACT_APP_API_BASE_URL}/orders/my-orders`, {
@@ -28,6 +29,26 @@ function OrderHistory() {
       })
       .finally(() => setLoading(false));
   }, [user]);
+
+  useEffect(() => {
+    // Fetch product details for each order
+    const productIds = orders.flatMap(order => order.productOrdered.map(item => item.productId));
+    const uniqueProductIds = [...new Set(productIds)]; // Remove duplicates
+
+    Promise.all(
+      uniqueProductIds.map(productId =>
+        fetch(`${process.env.REACT_APP_API_BASE_URL}/products/${productId}`, {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`,
+          },
+        })
+          .then(res => res.json())
+          .then(product => {
+            setProducts(prev => ({ ...prev, [product._id]: product }));
+          })
+      )
+    ).catch(err => setError('Failed to fetch product details.'));
+  }, [orders]);
 
   const getStatusColor = (status) => {
     switch (status) {
@@ -76,6 +97,7 @@ function OrderHistory() {
                   <th>Total Amount</th>
                   <th># of Items</th>
                   <th>Status</th>
+                  <th>Products</th>
                 </tr>
               </thead>
               <tbody>
@@ -89,6 +111,25 @@ function OrderHistory() {
                       <span className={`badge bg-${getStatusColor(order.status)}`}>
                         {order.status}
                       </span>
+                    </td>
+                    <td>
+                      <ul>
+                        {order.productOrdered.map((item) => {
+                          const product = products[item.productId];
+                          return product ? (
+                            <li key={item.productId}>
+                              <Image
+                                src={product.image}
+                                alt={product.name}
+                                style={{ width: '50px', height: '50px', objectFit: 'cover', marginRight: '10px' }}
+                              />
+                              {product.name} (x{item.quantity})
+                            </li>
+                          ) : (
+                            <li key={item.productId}>Loading product...</li>
+                          );
+                        })}
+                      </ul>
                     </td>
                   </tr>
                 ))}

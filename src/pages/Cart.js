@@ -4,20 +4,19 @@ import UserContext from "../context/UserContext";
 import CartContext from "../context/CartContext";
 import Swal from 'sweetalert2';
 import CheckoutOrder from '../components/CheckoutOrder';
-import { useNavigate } from "react-router-dom"; // Import useNavigate
-import { FaTrashAlt, FaPlus, FaMinus, FaShoppingCart } from 'react-icons/fa'; // Icons
+import { useNavigate } from "react-router-dom";
+import { FaTrashAlt, FaPlus, FaMinus, FaShoppingCart } from 'react-icons/fa';
+import { Notyf } from 'notyf';
 
 export default function Cart() {
+  const notyf = new Notyf();
   const { user } = useContext(UserContext);
   const { cart, setCart } = useContext(CartContext);
-  const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [updatingId, setUpdatingId] = useState(null);
-  const navigate = useNavigate(); // Initialize navigate
+  const navigate = useNavigate();
 
-  // Define fetchCart with useCallback to prevent unnecessary re-renders
   const fetchCart = useCallback(() => {
-    setLoading(true);
     fetch(`${process.env.REACT_APP_API_BASE_URL}/cart/get-cart`, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("token")}`
@@ -25,22 +24,16 @@ export default function Cart() {
     })
       .then(res => res.json())
       .then(data => {
-        if (data.cart) {
-          setCart(data.cart);
-        } else {
-          setCart({ cartItems: [], totalPrice: 0 }); // If cart not found, set empty cart state
-        }
-        setLoading(false);
+        setCart(data.cart || { cartItems: [], totalPrice: 0 });
       })
       .catch(() => {
         setError("Failed to load cart.");
-        setLoading(false);
       });
-  }, [setCart]); // Adding setCart to dependency array
+  }, [setCart]);
 
   useEffect(() => {
     fetchCart();
-  }, [fetchCart]); // Make sure fetchCart is in the dependency array
+  }, [fetchCart]);
 
   const updateQuantity = async (productId, newQuantity) => {
     if (newQuantity <= 0) return;
@@ -59,22 +52,12 @@ export default function Cart() {
 
       if (res.ok) {
         fetchCart();
-        Swal.fire({
-          icon: "success",
-          title: "Updated!",
-          text: "Product quantity updated.",
-          timer: 1200,
-          showConfirmButton: false
-        });
+        notyf.success("Product Quantity Updated");
       } else {
         throw new Error();
       }
     } catch {
-      Swal.fire({
-        icon: "error",
-        title: "Error",
-        text: "Could not update quantity."
-      });
+      notyf.error("Could not update quantity.");
     } finally {
       setUpdatingId(null);
     }
@@ -93,15 +76,9 @@ export default function Cart() {
 
     if (res.ok) {
       fetchCart();
-      Swal.fire({
-        icon: "success",
-        title: "Removed!",
-        text: "Item removed from cart.",
-        timer: 1200,
-        showConfirmButton: false
-      });
+      notyf.success("Item removed from cart.");
     } else {
-      Swal.fire("Error", "Failed to remove item.", "error");
+      notyf.error("Failed to remove item.");
     }
     setUpdatingId(null);
   };
@@ -129,7 +106,7 @@ export default function Cart() {
       if (res.ok) {
         setCart({ cartItems: [], totalPrice: 0 });
         Swal.fire("Cleared", "Cart is now empty.", "success").then(() => {
-          navigate("/products"); // Navigate to products page after clearing cart
+          navigate("/products");
         });
       } else {
         Swal.fire("Error", "Could not clear cart.", "error");
@@ -142,7 +119,6 @@ export default function Cart() {
     fetchCart();
   };
 
-  if (loading) return <Container><p className="text-center">Loading cart...</p></Container>;
   if (error) return <Container><Alert variant="danger">{error}</Alert></Container>;
   if (!cart || cart.cartItems.length === 0) return (
     <Container className="d-flex justify-content-center align-items-center" style={{ minHeight: '50vh' }}>
@@ -184,6 +160,13 @@ export default function Cart() {
             return (
               <tr key={productId}>
                 <td>
+                  {product.image && (
+                    <img 
+                      src={product.image} 
+                      alt={product.name} 
+                      style={{ width: '80px', height: '80px', objectFit: 'cover', marginRight: '10px' }}
+                    />
+                  )}
                   <strong>{product.name || "Unnamed Product"}</strong><br />
                   <small>{product.description || "No description"}</small>
                 </td>
@@ -239,13 +222,13 @@ export default function Cart() {
             onClick={clearCart}
             className="btn btn-danger w-100 py-3 px-4"
             style={{
-              fontWeight: 'bold',  
-              borderRadius: '30px',  
-              boxShadow: '0 4px 8px rgba(255, 0, 0, 0.2)',  
-              transition: 'background-color 0.3s, transform 0.3s', 
+              fontWeight: 'bold',
+              borderRadius: '30px',
+              boxShadow: '0 4px 8px rgba(255, 0, 0, 0.2)',
+              transition: 'background-color 0.3s, transform 0.3s',
             }}
             onMouseEnter={(e) => e.target.style.transform = 'scale(1.05)'} 
-            onMouseLeave={(e) => e.target.style.transform = 'scale(1)'} 
+            onMouseLeave={(e) => e.target.style.transform = 'scale(1)'}
           >
             Clear Cart
           </Button>

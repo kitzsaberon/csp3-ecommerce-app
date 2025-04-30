@@ -28,50 +28,65 @@ const ProductDetails = ({ products, currentPage, itemsPerPage, paginate, getPage
 
       {/* Product Table */}
       <Row className="mb-4">
-        <Col md={12}>
-          <Table striped bordered hover responsive>
-            <thead>
-              <tr className="text-center">
-                <th>ID</th>
-                <th>Name</th>
-                <th>Description</th>
-                <th>Price</th>
-                <th>Availability</th>
-                <th colSpan={2}>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {currentProducts.map((product) => (
-                <tr key={product._id} className="text-center">
-                  <td>{product._id}</td>
-                  <td>{product.name}</td>
-                  <td>{product.description}</td>
-                  <td>₱{Number(product.price).toLocaleString('en-PH', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
-                  <td className="text-center">
-                  {product.isActive ? (
-                    <Badge bg="success" className="d-flex align-items-center justify-content-center gap-1 p-2">
-                      <FaCheckCircle /> Available
-                    </Badge>
-                  ) : (
-                    <Badge bg="danger" className="d-flex align-items-center justify-content-center gap-1 p-2">
-                      <FaTimesCircle /> Unavailable
-                    </Badge>
-                  )}
-                </td>
+  <Col md={12}>
+    <Table striped bordered hover responsive>
+      <thead>
+        <tr className="text-center">
+          <th>ID</th>
+          <th>Name</th>
+          <th>Description</th>
+          <th>Price</th>
+          <th>Image</th> {/* Add image column */}
+          <th>Availability</th>
+          <th colSpan={2}>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {currentProducts.map((product) => (
+          <tr key={product._id} className="text-center">
+            <td>{product._id}</td>
+            <td>{product.name}</td>
+            <td>{product.description}</td>
+            <td>₱{Number(product.price).toLocaleString('en-PH', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+            
+            {/* Display the product image */}
+            <td>
+              {product.image ? (
+                <img 
+                  src={product.image} 
+                  alt={product.name} 
+                  style={{ width: '100px', height: '100px', objectFit: 'cover' }} 
+                />
+              ) : (
+                <span>No image available</span>
+              )}
+            </td>
 
+            <td className="text-center">
+              {product.isActive ? (
+                <Badge bg="success" className="d-flex align-items-center justify-content-center gap-1 p-2">
+                  <FaCheckCircle /> Available
+                </Badge>
+              ) : (
+                <Badge bg="danger" className="d-flex align-items-center justify-content-center gap-1 p-2">
+                  <FaTimesCircle /> Unavailable
+                </Badge>
+              )}
+            </td>
 
-                  <td>
-                    <EditProduct product={product} fetchData={fetchData} />
-                  </td>
-                  <td>
-                    <ArchiveProduct product={product} isActive={product.isActive} fetchData={fetchData} />
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </Table>
-        </Col>
-      </Row>
+            <td>
+              <EditProduct product={product} fetchData={fetchData} />
+            </td>
+            <td>
+              <ArchiveProduct product={product} isActive={product.isActive} fetchData={fetchData} />
+            </td>
+          </tr>
+        ))}
+      </tbody>
+    </Table>
+  </Col>
+</Row>
+
 
 {/* Pagination Controls */}
 <Row className="justify-content-center">

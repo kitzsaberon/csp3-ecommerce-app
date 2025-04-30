@@ -7,6 +7,7 @@ const AddProduct = ({ fetchData }) => {
   const [productName, setProductName] = useState('');
   const [productDescription, setProductDescription] = useState('');
   const [productPrice, setProductPrice] = useState('');
+  const [productImageUrl, setProductImageUrl] = useState(''); // State for image URL
 
   const handleShowModal = () => setShowModal(true);
   const handleCloseModal = () => {
@@ -14,6 +15,7 @@ const AddProduct = ({ fetchData }) => {
     setProductName('');
     setProductDescription('');
     setProductPrice('');
+    setProductImageUrl(''); // Reset the image URL
   };
 
   // Handle form submission and send a POST request to backend
@@ -30,6 +32,7 @@ const AddProduct = ({ fetchData }) => {
       name: productName,
       description: productDescription,
       price: productPrice,
+      image: productImageUrl, // Use the image URL directly
     };
 
     try {
@@ -39,7 +42,7 @@ const AddProduct = ({ fetchData }) => {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`,
         },
-        body: JSON.stringify(newProduct),
+        body: JSON.stringify(newProduct), // Send the data as JSON
       });
 
       if (!response.ok) {
@@ -66,7 +69,7 @@ const AddProduct = ({ fetchData }) => {
   };
 
   // Check if all fields are filled
-  const isFormValid = productName && productDescription && productPrice;
+  const isFormValid = productName && productDescription && productPrice && productImageUrl;
 
   return (
     <>
@@ -108,6 +111,16 @@ const AddProduct = ({ fetchData }) => {
                 placeholder="Enter product price"
                 value={productPrice}
                 onChange={(e) => setProductPrice(e.target.value)}
+                required
+              />
+            </Form.Group>
+            <Form.Group controlId="productImageUrl" className="mb-3">
+              <Form.Label>Product Image URL</Form.Label>
+              <Form.Control
+                type="text"
+                placeholder="Enter image URL"
+                value={productImageUrl}
+                onChange={(e) => setProductImageUrl(e.target.value)}
                 required
               />
             </Form.Group>
